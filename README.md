@@ -25,13 +25,8 @@ Download the "BattleGrid.rar" file, unzip the folder on any desktop with Java 7+
 - Background Screens: Assorted Megaman Sprites Edited into BG tiles (CAPCOM)
 
 ### SCREENSHOTS
-(Welcome Screen)
 ![Welcome Screen](http://i.imgur.com/uMHu5G3.png)
-(Difficulty Screen)
 ![Difficulty](http://i.imgur.com/MHpuOrY.png)
-(Draw Screen)
 ![Draw Phase](http://i.imgur.com/9Rvm70E.png)
-(Battle Screen)
 ![Battle Phase](http://i.imgur.com/zAWq6PR.png)
-(Game Over Screen)
 ![Game Over](http://i.imgur.com/9iqE1vJ.png)
