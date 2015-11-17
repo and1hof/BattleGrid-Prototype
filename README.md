@@ -23,6 +23,9 @@ Download the "BattleGrid.rar" file, unzip the folder on any desktop with Java 7+
 - Player & AI: Old Megaman sprites (CAPCOM)
 - Music: Megaman Battle Network (CAPCOM)
 - Background Screens: Assorted Megaman Sprites Edited into BG tiles (CAPCOM)
+- 
+### LEGAL
+This is an in-progress open-source FAN GAME, not to be released commercially for profit. 
 
 ### SCREENSHOTS
 ![Welcome Screen](http://i.imgur.com/uMHu5G3.png)
