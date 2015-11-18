@@ -214,15 +214,16 @@ public class GameScreen implements Screen {
 	
 		drawUI();
 		// TARGET INDICATORS
-//		if (p1.myHand.size() > 0) {
-//			int[] p1Indi = animIndi(p1);
-//			myGame.myBatch.draw(indicator, p1Indi[0], p1Indi[1]);
-//		}
+		if (p1.myHand.size() > 0) {
+			int[] p1Indi = animIndi(p1);
+			myGame.myBatch.draw(indicator, p1Indi[0], p1Indi[1], p1Indi[2] + 2, 69);
+		}
 		
 		int p1f = 4;
 		int p2f = 4;
 		int width = 100;
 		int p2Width = 100;
+		int p2Spawn = p2Draw[0];
 		if (p1.animFrame == 1) {
 			p1f = 5;
 			width = 200;
@@ -230,13 +231,14 @@ public class GameScreen implements Screen {
 		if (p2.animFrame == 1) {
 			p2f = 4;
 			p2Width = 200;
+			p2Spawn = p2Spawn - 75;
 		}
 		Animation p1Anim = getAvatar(p1);
 		Animation p2Anim = getAvatar(p2);
 		TextureRegion p1Frame = p1Anim.getKeyFrame(myGame.stateTime, true);
 		TextureRegion p2Frame = p2Anim.getKeyFrame(myGame.stateTime, true);
 		myGame.myBatch.draw(p1Frame, p1Draw[0], p1Draw[1], width, 125); // player
-		myGame.myBatch.draw(p2Frame, p2Draw[0], p2Draw[1], p2Width, 125);
+		myGame.myBatch.draw(p2Frame, p2Spawn, p2Draw[1], p2Width, 125);
 		myGame.myBatch.end();
 		
 		if (p1.hp < 1) {
@@ -397,24 +399,10 @@ public class GameScreen implements Screen {
 		if (isP1 && p1.myHand.size() > 0) { // calculate P1's coordinates
 			Card next = p1.myHand.get(0);
 			double size = 1;
-			for (int i = 0; i < next.range; i++) {
-				size = size + .75;
-			}
-			result[2] = (int) (115 * next.range) - (15 * next.range)*(y+1); // x scale
-			result[3] = 115; // y scale
-			if (y == 2) {
-				result[0] = 180 + x * 75 + 60; // x coordinate
-				result[1] = 175; // y coordinate
-				result[2] = result[2] - x*2;
-			} else if (y == 1) {
-				result[0] = 120 + x * 95 + 80; // x coordinate
-				result[1] = 115; // y coordinate
-				result[2] = result[2] + 6*next.range - x*3;
-			} else {
-				result[0] = 30 + x * 130 + 100; // x coordinate
-				result[1] = 25; // y coordinate
-				result[2] = result[2] + 20*next.range - x*5;
-			}
+			
+			result[0] =  133 * x;
+			result[1] = 50 + 70 * y;
+			result[2] = 133 * (next.range + 1);
 		} else { // calculate AI's coordinates
 			// unused right now
 		}
