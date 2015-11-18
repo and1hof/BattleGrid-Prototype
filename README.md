@@ -43,5 +43,4 @@ This is an in-progress open-source FAN GAME, not to be released commercially for
 ![Welcome Screen](http://i.imgur.com/52oushd.png)
 ![Difficulty](http://i.imgur.com/vCgPQ7g.png)
 ![Draw Phase](http://i.imgur.com/OC0kYB6.png)
-![Battle Phase](http://i.imgur.com/zAWq6PR.png)
-![Game Over](http://i.imgur.com/Wbye5sZ.png)
+![Battle Phase](http://i.imgur.com/Wbye5sZ.png)
