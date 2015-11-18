@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,9 +35,14 @@ public class GameScreen implements Screen {
 	TextureRegion bg3;
 	TextureRegion cbg1;
 	TextureRegion card;
+	TextureRegion health;
 	// ART: PLAYER AND AI FRAMES
-	TextureRegion tp1;
-	TextureRegion tp2;
+	Animation p1Idle;
+	Animation p2Idle;
+	Animation p1Shoot;
+	Animation p2Shoot;
+	Animation p1Move;
+	Animation p2Move;
 	// ANIMATION ASSETS
 	// ANIMATION: BACKGROUND
 	Animation bgAnim;
@@ -76,12 +82,18 @@ public class GameScreen implements Screen {
 		bg3 = new TextureRegion(new Texture("GameScreen/bg3.png"));
 		cbg1 = new TextureRegion(new Texture("GameScreen/cbg1.png"));
 		card = new TextureRegion(new Texture("GameScreen/card.png"));
+		health = new TextureRegion(new Texture("GameScreen/health.png"));
 		indicator = new TextureRegion(new Texture("GameScreen/indicator.png"));
 		bgAnim = new Animation(0.35f, bg1, bg2, bg3, bg2);
 		bgAnim.setPlayMode(Animation.PlayMode.LOOP);
 		// PLAYER AND AI
-		tp1 = new TextureRegion(new Texture("GameScreen/p1-0.png"));
-		tp2 = new TextureRegion(new Texture("GameScreen/p2-0.png"));
+		p1Idle = getAnim("GameScreen/p1-0.png", 1, 4, .6f);
+		p2Idle = getAnim("GameScreen/p2-0.png", 1, 4, .6f);
+		p1Shoot = getAnim("GameScreen/p1-1.png", 1, 5, .04f);
+		p2Shoot = getAnim("GameScreen/p2-1.png", 1, 5, .04f);
+		p1Move  = getAnim("GameScreen/p1-2.png", 1, 4, .025f);
+		p2Move = getAnim("GameScreen/p2-2.png", 1, 4, .025f);
+		//p2Shoot = getAnim("GameScreen/p2-1.png", 1, 5, .3f);
 		// CONFIGURE MUSIC
 		battleTheme = Gdx.audio.newMusic(Gdx.files.internal("GameScreen/battle.mp3"));
 		battleTheme.setLooping(true);
@@ -135,8 +147,9 @@ public class GameScreen implements Screen {
 		myGame.myBatch.draw(cbg1, 0, 0);
 		for (int i = 0; i < p1.random.size(); i++) {
 			myGame.myBatch.draw(card, 37 + 150 * i, 150, 125, 200);
-			myGame.myFont.draw(myGame.myBatch, p1.random.get(i).name, 52 + 120 * i + (30 * i), 343);
-		}
+			myGame.myFont.setColor(Color.BLACK);
+			myGame.myFont.draw(myGame.myBatch, p1.random.get(i).name, 52 + 120 * i + (30 * i), 240);
+		} myGame.myFont.setColor(Color.WHITE);
 		myGame.myBatch.end();
 
 		if (p1.random.size() == 0) {
@@ -197,17 +210,33 @@ public class GameScreen implements Screen {
 		// RENDER: PLAYER AND AI
 		int[] p1Draw = animState(p1); // collect coordinates for player
 		int[] p2Draw = animState(p2); // collect coordinates for AI
-		tp1 = getAvatar(p1);
-		tp2 = getAvatar(p2);
+
 	
 		drawUI();
 		// TARGET INDICATORS
-		if (p1.myHand.size() > 0) {
-			int[] p1Indi = animIndi(p1);
-			myGame.myBatch.draw(indicator, p1Indi[0], p1Indi[1], p1Indi[2], p1Indi[3]);
+//		if (p1.myHand.size() > 0) {
+//			int[] p1Indi = animIndi(p1);
+//			myGame.myBatch.draw(indicator, p1Indi[0], p1Indi[1]);
+//		}
+		
+		int p1f = 4;
+		int p2f = 4;
+		int width = 100;
+		int p2Width = 100;
+		if (p1.animFrame == 1) {
+			p1f = 5;
+			width = 200;
 		}
-		myGame.myBatch.draw(tp1, p1Draw[0], p1Draw[1], p1Draw[2], p1Draw[3]); // player
-		myGame.myBatch.draw(tp2, p2Draw[0], p2Draw[1], p2Draw[2], p2Draw[3]);
+		if (p2.animFrame == 1) {
+			p2f = 4;
+			p2Width = 200;
+		}
+		Animation p1Anim = getAvatar(p1);
+		Animation p2Anim = getAvatar(p2);
+		TextureRegion p1Frame = p1Anim.getKeyFrame(myGame.stateTime, true);
+		TextureRegion p2Frame = p2Anim.getKeyFrame(myGame.stateTime, true);
+		myGame.myBatch.draw(p1Frame, p1Draw[0], p1Draw[1], width, 125); // player
+		myGame.myBatch.draw(p2Frame, p2Draw[0], p2Draw[1], p2Width, 125);
 		myGame.myBatch.end();
 		
 		if (p1.hp < 1) {
@@ -253,47 +282,38 @@ public class GameScreen implements Screen {
 		}
 		
 		long tilNextDraw = ((15000 - TimeUtils.timeSinceMillis(p1.lastDraw)) / 1000);
-		myGame.myFont.draw(myGame.myBatch, "HP: " + p1.hp, 95, 455);
-		myGame.myFont.draw(myGame.myBatch, "HP: " + p2.hp, 600, 455);
-		myGame.myFont.draw(myGame.myBatch, c1, 95, 435);
-		myGame.myFont.draw(myGame.myBatch, c2, 610, 435);
-		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 95, 417);
-		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 625, 417);
-		myGame.myFont.draw(myGame.myBatch, p1.myHand.size() + "", 68, 402);
-		myGame.myFont.draw(myGame.myBatch, p2.myHand.size() + "", 726, 402);
+		myGame.myBatch.draw(health, 0, 420, 165, 60);
+		myGame.myBatch.draw(health, 635, 420, 165, 60);
+		myGame.myFont.draw(myGame.myBatch, "HP: " + p1.hp, 10, 470);
+		myGame.myFont.draw(myGame.myBatch, "HP: " + p2.hp, 645, 470);
+		myGame.myFont.draw(myGame.myBatch, c1, 10, 455);
+		myGame.myFont.draw(myGame.myBatch, c2, 645, 455);
+		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 10, 440);
+		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 645, 440);
+		myGame.myFont.draw(myGame.myBatch, "("+p1.myHand.size() + ")", 140, 470);
+		myGame.myFont.draw(myGame.myBatch, "("+p2.myHand.size() + ")", 775, 470);
 	}
 
 	/*
 	 * Get and return avatar for player or AI based on game state.
 	 */
-	private TextureRegion getAvatar(Player thePlayer) {
-		TextureRegion result = null;
+	private Animation getAvatar(Player thePlayer) {
 		boolean isP1 = !thePlayer.AI;
 
 		if (isP1) {
-			if (thePlayer.animFrame == 0) {
-				result = new TextureRegion(new Texture("GameScreen/p1-0.png")); // idle
-			} else if (thePlayer.animFrame == 1) {
-				result = new TextureRegion(new Texture("GameScreen/p1-1.png")); // shooting
-
-			} else if (thePlayer.animFrame == 2) {
-				result = new TextureRegion(new Texture("GameScreen/p1-2.png")); // up
-			} else if (thePlayer.animFrame == 3) {
-				result = new TextureRegion(new Texture("GameScreen/p1-3.png")); // down
+			if (p1.animFrame == 1) {
+				return p1Shoot;
+			} else if (p1.animFrame == 2 || p1.animFrame == 3) {
+				return p1Move;
 			}
-		} else {
-			if (thePlayer.animFrame == 0) {
-				result = new TextureRegion(new Texture("GameScreen/p2-0.png"));
-			} else if (thePlayer.animFrame == 1) {
-				result = new TextureRegion(new Texture("GameScreen/p2-1.png"));
-			} else if (thePlayer.animFrame == 2) {
-				result = new TextureRegion(new Texture("GameScreen/p2-2.png"));
-			} else if (thePlayer.animFrame == 3) {
-				result = new TextureRegion(new Texture("GameScreen/p2-3.png"));
-			}
+			return p1Idle;
+		} 
+		if (p2.animFrame == 1) {
+			return p2Shoot;
+		} else if (p2.animFrame == 2 || p2.animFrame == 3) {
+			return p2Move;
 		}
-
-		return result;
+		return p2Idle;
 	}
 
 	/*
@@ -302,16 +322,16 @@ public class GameScreen implements Screen {
 	private void getBattleInput(Player thePlayer) {
 		if (Gdx.input.isKeyJustPressed(Keys.DPAD_UP)) {
 			myBoard.move(0, thePlayer);
-			thePlayer.setAnimFrame(2, 50);
+			thePlayer.setAnimFrame(2, 100);
 		} else if (Gdx.input.isKeyJustPressed(Keys.DPAD_DOWN)) {
 			myBoard.move(1, thePlayer);
-			thePlayer.setAnimFrame(2, 50);
+			thePlayer.setAnimFrame(2, 100);
 		} else if (Gdx.input.isKeyJustPressed(Keys.DPAD_LEFT)) {
 			myBoard.move(3, thePlayer);
-			thePlayer.setAnimFrame(3, 50);
+			thePlayer.setAnimFrame(3, 100);
 		} else if (Gdx.input.isKeyJustPressed(Keys.DPAD_RIGHT)) {
 			myBoard.move(2, thePlayer);
-			thePlayer.setAnimFrame(3, 50);
+			thePlayer.setAnimFrame(3, 100);
 		} else if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			if (p1.myHand.size() > 0) {
 				thePlayer.setAnimFrame(1, 200); // shoot
@@ -354,31 +374,11 @@ public class GameScreen implements Screen {
 		int y = pos.y;
 
 		if (isP1) { // calculate P1's coordinates
-			result[2] = 115 - y * 25; // x scale
-			result[3] = 115 - y * 25; // y scale
-			if (y == 2) {
-				result[0] = 180 + x * 75; // x coordinate
-				result[1] = 175; // y coordinate
-			} else if (y == 1) {
-				result[0] = 120 + x * 95; // x coordinate
-				result[1] = 115; // y coordinate
-			} else {
-				result[0] = 30 + x * 130; // x coordinate
-				result[1] = 25; // y coordinate
-			}
+			result[0] = 10 + 133 * x;
+			result[1] = 75 + 70 * y;
 		} else { // calculate AI's coordinates
-			result[2] = 115 - y * 25; // x scale
-			result[3] = 115 - y * 25; // y scale
-			if (y == 2) {
-				result[0] = 180 + x * 72; // x coordinate
-				result[1] = 175; // y coordinate
-			} else if (y == 1) {
-				result[0] = 120 + x * 91; // x coordinate
-				result[1] = 115; // y coordinate
-			} else {
-				result[0] = 30 + x * 121; // x coordinate
-				result[1] = 25; // y coordinate
-			}
+			result[0] = 10 + 133 * x;
+			result[1] = 75 + 70 * y;
 		}
 		return result;
 	}
@@ -424,7 +424,7 @@ public class GameScreen implements Screen {
 	/*
 	 * Return the correct player sprite to be rendered.
 	 */
-	public TextureRegion getAnim(String sheet, int row, int col, float flip) {
+	public Animation getAnim(String sheet, int row, int col, float flip) {
 		Animation myAnim;
 		Texture mySheet;
 		TextureRegion myFrame;
@@ -435,15 +435,15 @@ public class GameScreen implements Screen {
 																													// rows
 		myFrames = new TextureRegion[col * row]; // columns times rows
 		int index = 0;
-		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 4; j++) {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
 				myFrames[index++] = temp[i][j];
 			}
 		}
 		myAnim = new Animation(flip, myFrames);
 		myFrame = myAnim.getKeyFrame(myGame.stateTime, true);
 
-		return myFrame;
+		return myAnim;
 	}
 
 	@Override

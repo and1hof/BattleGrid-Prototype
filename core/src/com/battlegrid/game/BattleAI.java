@@ -385,10 +385,10 @@ public class BattleAI {
 	
 	public void animator(int move) {
 		if (move == 0 || move == 1) {
-			p2.setAnimFrame(2, 50);
+			p2.setAnimFrame(2, 100);
 		}
 		if (move == 2 || move == 3) {
-			p2.setAnimFrame(3, 50);
+			p2.setAnimFrame(3, 100);
 		}
 	}
 	
