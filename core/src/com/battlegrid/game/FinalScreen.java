@@ -23,6 +23,9 @@ public class FinalScreen implements Screen {
 	Sound selectSound;
 	// difficulty setting
 	boolean win;
+    String credits = "github.com/andhofmt/BattleGrid";
+	int pos = 0 - credits.length() * 8;
+	int pos2 = 800;
 	
 	public FinalScreen(final BattleGrid theGame, boolean isWin) {
 		// COPY GAME STATE
@@ -61,14 +64,24 @@ public class FinalScreen implements Screen {
         // load in current animation frame
         currentFrame = wpAnim.getKeyFrame(myGame.stateTime, true);
         // render the welcome screen
-        String gg = "YOU LOST THE GAME!";
+        String gg = "YOU LOSE!";
         if (win) {
-        	gg = "YOU WON THE GAME!";
+        	gg = "YOU WIN!";
         }
+        
         myGame.myBatch.begin();
         myGame.myBatch.draw(currentFrame, 0, 0);
-        myGame.myFont.draw(myGame.myBatch, gg, 100, 100);
+        myGame.myFont.draw(myGame.myBatch, gg, pos2, 352);
+        myGame.myFont.draw(myGame.myBatch, credits.toUpperCase(), pos, 147);
+        pos++;
+        pos2--;
         myGame.myBatch.end();
+        if (pos >= 800) {
+        	pos = 0 - credits.length() * 8;
+        }
+        if (pos2 <= 0 - (gg.length() * 8)) {
+        	pos2 = 800;
+        }
 
         // Transition to the game
         if (Gdx.input.isTouched()) {

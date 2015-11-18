@@ -70,7 +70,6 @@ public class WelcomeScreen implements Screen {
         myGame.myBatch.begin();
         myGame.myBatch.draw(currentFrame, 0, 0);
         myGame.myBatch.end();
-
         // Transition to the game
         if (Gdx.input.isTouched()) {
         	selectSound.play(); 
