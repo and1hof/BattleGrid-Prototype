@@ -7,8 +7,8 @@ Download the "bg-1.0.rar" file, unzip the folder on any desktop with Java 7+, an
 ### HOW TO PLAY
 1. Click anywhere on welcome screen to start a match
 2. Select your difficulty level (AI)
-3. Draw phase: select the order of your card hand. Try to maximise damage and / or range. Water -> Elec = 2x, Grass -> Fire = 2x.
-4. Navigate the grid, attacking the enemy when he is in range to be hit (you have a range indicator at your feet). Dodge enemy when he is in range to attack.
+3. Select your hand order. Water -> Elec & Grass -> Fire = 2x damage. 
+4. Navigate grid, attacking and dodging.
 5. Redraw a new hand every 15 seconds, a max of 6 times.
 6. Win if AI hp reaches 0.
 7. Lose if your HP reaches 0, or you draw 6 times (no more cards in deck.)
