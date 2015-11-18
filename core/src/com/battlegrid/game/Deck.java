@@ -28,14 +28,14 @@ public class Deck {
 		}
 	}
 	
-	private String getElem(int element) {
+	public String getElem(int element) {
 		String ret = "Grass"; // base case
 		if (element == 2) {
 			ret = "Fire";
 		} else if (element == 3) {
 			ret = "Water";
 		} else if (element == 4) {
-			ret = "Electric";
+			ret = "Elec";
 		} return ret;
 	}
 	

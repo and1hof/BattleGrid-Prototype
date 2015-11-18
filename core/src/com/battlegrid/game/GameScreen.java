@@ -146,9 +146,13 @@ public class GameScreen implements Screen {
 		myGame.myBatch.begin();
 		myGame.myBatch.draw(cbg1, 0, 0);
 		for (int i = 0; i < p1.random.size(); i++) {
-			myGame.myBatch.draw(card, 37 + 150 * i, 150, 125, 200);
+			myGame.myBatch.draw(card, 50 + 150 * i, 180, 105, 125);
 			myGame.myFont.setColor(Color.BLACK);
-			myGame.myFont.draw(myGame.myBatch, p1.random.get(i).name, 52 + 120 * i + (30 * i), 240);
+			Card next = p1.random.get(i);
+			String elem = p1.myDeck.getElem(next.element);
+			myGame.myFont.draw(myGame.myBatch, "ELE: " + elem.toUpperCase(), 60 + 120 * i + (30 * i), 240);
+			myGame.myFont.draw(myGame.myBatch, "DMG: " + next.damage, 60 + 120 * i + (30 * i), 225);
+			myGame.myFont.draw(myGame.myBatch, "RNG: " + next.range, 60 + 120 * i + (30 * i), 210);
 		} myGame.myFont.setColor(Color.WHITE);
 		myGame.myBatch.end();
 

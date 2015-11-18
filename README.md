@@ -40,8 +40,8 @@ If you think you can improve the game, engine or graphics please feel free to ma
 This is an in-progress open-source FAN GAME, not to be released commercially for profit. 
 
 ### SCREENSHOTS
-![Welcome Screen](http://i.imgur.com/uMHu5G3.png)
-![Difficulty](http://i.imgur.com/MHpuOrY.png)
-![Draw Phase](http://i.imgur.com/9Rvm70E.png)
+![Welcome Screen](http://i.imgur.com/52oushd.png)
+![Difficulty](http://i.imgur.com/vCgPQ7g.png)
+![Draw Phase](http://i.imgur.com/OC0kYB6.png)
 ![Battle Phase](http://i.imgur.com/zAWq6PR.png)
-![Game Over](http://i.imgur.com/9iqE1vJ.png)
+![Game Over](http://i.imgur.com/Wbye5sZ.png)
