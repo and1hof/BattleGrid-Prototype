@@ -4,7 +4,7 @@ A clone of "Megaman Battle Network", a TGC/TPS/RTS hybrid released in the early 
 ### PREREQUISITES 
 - Java 7+
 - OpenGL
-- ~512MB RAM 
+- 512MB RAM 
 
 ### GETTING STARTED
 Download the "bg-1.0.rar" file, unzip the folder and double click the "bg-1.0.jar" file.  
