@@ -1,9 +1,13 @@
 # BattleGrid
 A clone of "Megaman Battle Network", a TGC/TPS/RTS hybrid released in the early 2000's.
 
+### PREREQUISITES 
+- Java 7+
+- OpenGL
+- ~512MB RAM 
+
 ### GETTING STARTED
-Download the "bg-1.0.rar" file, unzip the folder on any desktop with Java 7+, and double click the "bg-1.0.jar" file.  
-NOTE: Open the source in Eclipse (requires Gradle) and compile to runnable jar for the latest release.
+Download the "bg-1.0.rar" file, unzip the folder and double click the "bg-1.0.jar" file.  
 
 ### HOW TO PLAY
 1. Click anywhere on welcome screen to start a match
