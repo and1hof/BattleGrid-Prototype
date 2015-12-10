@@ -3,16 +3,19 @@ package com.battlegrid.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+/*
+ * Represents the game board that the players play on.
+ */
 public class GameBoard {
-	public int[][] board = {{0,0,0},{0,1,0},{0,0,0},{0,0,0},{0,2,0},{0,0,0}};
+	public int[][] board = { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 2, 0 }, { 0, 0, 0 } };
 	public Player p1;
 	public Player p2;
-	
+
 	public GameBoard(Player one, Player two) {
 		p1 = one;
 		p2 = two;
 	}
-	
+
 	/*
 	 * Find player's location on the board.
 	 */
@@ -34,11 +37,11 @@ public class GameBoard {
 		}
 		return new Point(x, y);
 	}
-	
+
 	public boolean move(int move, Player thePlayer) {
 		boolean moved = false;
 		boolean isP1 = !thePlayer.AI;
-		Point pos    = this.findPlayer(isP1, board);
+		Point pos = this.findPlayer(isP1, board);
 		int x = pos.x;
 		int y = pos.y;
 		int target = 1;
@@ -46,7 +49,7 @@ public class GameBoard {
 			target = 2;
 		}
 		ArrayList<Integer> theMoves = moves(isP1, board);
-		if (theMoves.indexOf(move) != -1 ) {
+		if (theMoves.indexOf(move) != -1) {
 			if (move == 0) {
 				board[x][y + 1] = target;
 				board[x][y] = 0;
@@ -64,13 +67,13 @@ public class GameBoard {
 		}
 		return moved;
 	}
-	
+
 	public ArrayList<Integer> moves(boolean p1, int[][] theBoard) {
 		ArrayList<Integer> theMoves = new ArrayList<Integer>();
 		Point player = findPlayer(p1, theBoard);
 		int x = player.x;
 		int y = player.y;
-		
+
 		// up
 		if (isValid(x, y + 1, p1)) {
 			theMoves.add(0);
@@ -89,7 +92,7 @@ public class GameBoard {
 		}
 		return theMoves;
 	}
-	
+
 	/*
 	 * Checks if a board location is valid.
 	 */
@@ -105,25 +108,25 @@ public class GameBoard {
 		}
 		return false;
 	}
-	
+
 	public boolean checkShot(int range, boolean playerOne) {
 		Point p1 = findPlayer(playerOne, board);
 		Point p2 = findPlayer(!playerOne, board);
-		
+
 		if (Math.abs(p1.x - p2.x) <= range && p1.y == p2.y) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public int[][] clone() {
 		int[][] input = board;
-	    if (input == null)
-	        return null;
-	    int[][] result = new int[input.length][];
-	    for (int r = 0; r < input.length; r++) {
-	        result[r] = input[r].clone();
-	    }
-	    return result;
+		if (input == null)
+			return null;
+		int[][] result = new int[input.length][];
+		for (int r = 0; r < input.length; r++) {
+			result[r] = input[r].clone();
+		}
+		return result;
 	}
 }

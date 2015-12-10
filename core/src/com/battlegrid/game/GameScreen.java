@@ -91,9 +91,9 @@ public class GameScreen implements Screen {
 		p2Idle = getAnim("GameScreen/p2-0.png", 1, 4, .6f);
 		p1Shoot = getAnim("GameScreen/p1-1.png", 1, 5, .04f);
 		p2Shoot = getAnim("GameScreen/p2-1.png", 1, 5, .04f);
-		p1Move  = getAnim("GameScreen/p1-2.png", 1, 4, .025f);
+		p1Move = getAnim("GameScreen/p1-2.png", 1, 4, .025f);
 		p2Move = getAnim("GameScreen/p2-2.png", 1, 4, .025f);
-		//p2Shoot = getAnim("GameScreen/p2-1.png", 1, 5, .3f);
+		// p2Shoot = getAnim("GameScreen/p2-1.png", 1, 5, .3f);
 		// CONFIGURE MUSIC
 		battleTheme = Gdx.audio.newMusic(Gdx.files.internal("GameScreen/battle.mp3"));
 		battleTheme.setLooping(true);
@@ -153,7 +153,8 @@ public class GameScreen implements Screen {
 			myGame.myFont.draw(myGame.myBatch, "ELE: " + elem.toUpperCase(), 60 + 120 * i + (30 * i), 240);
 			myGame.myFont.draw(myGame.myBatch, "DMG: " + next.damage, 60 + 120 * i + (30 * i), 225);
 			myGame.myFont.draw(myGame.myBatch, "RNG: " + next.range, 60 + 120 * i + (30 * i), 210);
-		} myGame.myFont.setColor(Color.WHITE);
+		}
+		myGame.myFont.setColor(Color.WHITE);
 		myGame.myBatch.end();
 
 		if (p1.random.size() == 0) {
@@ -167,8 +168,6 @@ public class GameScreen implements Screen {
 	private void getDrawInput(Player p1) {
 		if (Gdx.input.justTouched()) {
 			int x = Gdx.input.getX();
-			int y = Gdx.input.getY();
-			// System.out.println("X: " + x + " Y: " + y);
 			/*
 			 * Allow the player to choose his own "card pick order" so he can
 			 * optimize ranges and elements.
@@ -215,25 +214,20 @@ public class GameScreen implements Screen {
 		int[] p1Draw = animState(p1); // collect coordinates for player
 		int[] p2Draw = animState(p2); // collect coordinates for AI
 
-	
 		drawUI();
 		// TARGET INDICATORS
 		if (p1.myHand.size() > 0) {
 			int[] p1Indi = animIndi(p1);
 			myGame.myBatch.draw(indicator, p1Indi[0], p1Indi[1], p1Indi[2] + 2, 69);
 		}
-		
-		int p1f = 4;
-		int p2f = 4;
+
 		int width = 100;
 		int p2Width = 100;
 		int p2Spawn = p2Draw[0];
 		if (p1.animFrame == 1) {
-			p1f = 5;
 			width = 200;
 		}
 		if (p2.animFrame == 1) {
-			p2f = 4;
 			p2Width = 200;
 			p2Spawn = p2Spawn - 75;
 		}
@@ -244,7 +238,7 @@ public class GameScreen implements Screen {
 		myGame.myBatch.draw(p1Frame, p1Draw[0], p1Draw[1], width, 125); // player
 		myGame.myBatch.draw(p2Frame, p2Spawn, p2Draw[1], p2Width, 125);
 		myGame.myBatch.end();
-		
+
 		if (p1.hp < 1) {
 			loseSound.play();
 			myGame.setScreen(new FadeOutTransition(myGame, new FinalScreen(myGame, false), 8));
@@ -258,7 +252,7 @@ public class GameScreen implements Screen {
 		if (TimeUtils.timeSinceMillis(p1.lastDraw) > 15000 && p1.myDeck.size() > 0) {
 			gameState = 0;
 			draws++;
-		} else if (TimeUtils.timeSinceMillis(p1.lastDraw) > 15000 && p1.myDeck.size() == 0){
+		} else if (TimeUtils.timeSinceMillis(p1.lastDraw) > 15000 && p1.myDeck.size() == 0) {
 			loseSound.play();
 			myGame.setScreen(new FadeOutTransition(myGame, new FinalScreen(myGame, false), 8));
 			dispose();
@@ -286,7 +280,7 @@ public class GameScreen implements Screen {
 		if (draws == 6) {
 			dtext = "Game Over: ";
 		}
-		
+
 		long tilNextDraw = ((15000 - TimeUtils.timeSinceMillis(p1.lastDraw)) / 1000);
 		myGame.myBatch.draw(health, 0, 420, 165, 60);
 		myGame.myBatch.draw(health, 635, 420, 165, 60);
@@ -296,8 +290,8 @@ public class GameScreen implements Screen {
 		myGame.myFont.draw(myGame.myBatch, c2, 645, 455);
 		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 10, 440);
 		myGame.myFont.draw(myGame.myBatch, dtext + tilNextDraw, 645, 440);
-		myGame.myFont.draw(myGame.myBatch, "("+p1.myHand.size() + ")", 140, 470);
-		myGame.myFont.draw(myGame.myBatch, "("+p2.myHand.size() + ")", 775, 470);
+		myGame.myFont.draw(myGame.myBatch, "(" + p1.myHand.size() + ")", 140, 470);
+		myGame.myFont.draw(myGame.myBatch, "(" + p2.myHand.size() + ")", 775, 470);
 	}
 
 	/*
@@ -313,7 +307,7 @@ public class GameScreen implements Screen {
 				return p1Move;
 			}
 			return p1Idle;
-		} 
+		}
 		if (p2.animFrame == 1) {
 			return p2Shoot;
 		} else if (p2.animFrame == 2 || p2.animFrame == 3) {
@@ -388,7 +382,7 @@ public class GameScreen implements Screen {
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Scale the targetting indicators for the game board.
 	 */
@@ -399,12 +393,11 @@ public class GameScreen implements Screen {
 		Point pos = myBoard.findPlayer(isP1, myBoard.clone());
 		int x = pos.x;
 		int y = pos.y;
-		
+
 		if (isP1 && p1.myHand.size() > 0) { // calculate P1's coordinates
 			Card next = p1.myHand.get(0);
-			double size = 1;
-			
-			result[0] =  133 * x;
+
+			result[0] = 133 * x;
 			result[1] = 50 + 70 * y;
 			result[2] = 133 * (next.range + 1);
 		} else { // calculate AI's coordinates
@@ -419,7 +412,6 @@ public class GameScreen implements Screen {
 	public Animation getAnim(String sheet, int row, int col, float flip) {
 		Animation myAnim;
 		Texture mySheet;
-		TextureRegion myFrame;
 		TextureRegion[] myFrames;
 
 		mySheet = new Texture(sheet);
@@ -433,32 +425,21 @@ public class GameScreen implements Screen {
 			}
 		}
 		myAnim = new Animation(flip, myFrames);
-		myFrame = myAnim.getKeyFrame(myGame.stateTime, true);
 
 		return myAnim;
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-	}
+	public void resize(int width, int height) {}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-
-	}
+	public void resume() {}
 
 	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-
-	}
+	public void hide() {}
 
 	@Override
 	public void dispose() {

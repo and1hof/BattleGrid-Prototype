@@ -22,7 +22,7 @@ public class Player {
 	public boolean drawing;
 	// ai only
 	public boolean AI;
-	
+
 	public Player(int theHP, boolean isAI) {
 		hp = theHP;
 		AI = isAI;
@@ -30,31 +30,31 @@ public class Player {
 		animTimer = 0;
 		theDuration = 0;
 		lastDraw = 0;
-		myDeck  = new Deck();
-		myHand  = new ArrayList<Card>();
-		random  = new ArrayList<Card>();
+		myDeck = new Deck();
+		myHand = new ArrayList<Card>();
+		random = new ArrayList<Card>();
 		drawing = false;
 		hasDrawn = false;
 	}
-	
+
 	public void setAnimFrame(int state, int duration) {
 		animFrame = state;
 		theDuration = duration;
 		animTimer = TimeUtils.millis();
-		
+
 	}
-	
+
 	public void resetFrame() {
 		animFrame = 0;
 	}
-	
+
 	public void draw() {
 		for (int i = 0; i < 5; i++) {
 			random.add(myDeck.draw());
-		} 
+		}
 		hasDrawn = true;
 	}
-	
+
 	/*
 	 * Reset animation frames.
 	 */
@@ -63,6 +63,5 @@ public class Player {
 			resetFrame();
 		}
 	}
-	
-	
+
 }

@@ -17,42 +17,42 @@ public class ScreenshotFactory {
 	/*
 	 * Save pixels to disk in PNG format. (root directory of game).
 	 */
-    public static void saveScreenshot(){
-        try{
-            FileHandle fh;
-            do{
-            	File legacy = new File("tFrame.png");
-            	legacy.delete(); // delete if already exists
-                fh = new FileHandle("tFrame" + ".png");
-            }while (fh.exists());
-            Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-            PixmapIO.writePNG(fh, pixmap);
-            pixmap.dispose();
-        }catch (Exception e){           
-        }
-    }
+	public static void saveScreenshot() {
+		try {
+			FileHandle fh;
+			do {
+				File legacy = new File("tFrame.png");
+				legacy.delete(); // delete if already exists
+				fh = new FileHandle("tFrame" + ".png");
+			} while (fh.exists());
+			Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+			PixmapIO.writePNG(fh, pixmap);
+			pixmap.dispose();
+		} catch (Exception e) {
+		}
+	}
 
-    /*
-     * Collect pixels from screen.
-     */
-    private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown){
-        final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
+	/*
+	 * Collect pixels from screen.
+	 */
+	private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown) {
+		final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
 
-        if (yDown) {
-            // Flip on vertical depending on pixel configuration.
-            ByteBuffer pixels = pixmap.getPixels();
-            int numBytes = w * h * 4;
-            byte[] lines = new byte[numBytes];
-            int numBytesPerLine = w * 4;
-            for (int i = 0; i < h; i++) {
-                pixels.position((h - i - 1) * numBytesPerLine);
-                pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
-            }
-            pixels.clear();
-            pixels.put(lines);
-            pixels.clear();
-        }
+		if (yDown) {
+			// Flip on vertical depending on configuration.
+			ByteBuffer pixels = pixmap.getPixels();
+			int numBytes = w * h * 4;
+			byte[] lines = new byte[numBytes];
+			int numBytesPerLine = w * 4;
+			for (int i = 0; i < h; i++) {
+				pixels.position((h - i - 1) * numBytesPerLine);
+				pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
+			}
+			pixels.clear();
+			pixels.put(lines);
+			pixels.clear();
+		}
 
-        return pixmap;
-    }
+		return pixmap;
+	}
 }

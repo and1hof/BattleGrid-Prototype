@@ -8,14 +8,14 @@ public class Card {
 	public int damage;
 	public int range;
 	public int element;
-	
+
 	public Card(String theName, int theDamage, int theRange, int theElement) {
 		name = theName;
 		damage = theDamage;
 		range = theRange;
 		element = theElement;
 	}
-	
+
 	public Card(Card theCard) {
 		name = theCard.name;
 		damage = theCard.damage;

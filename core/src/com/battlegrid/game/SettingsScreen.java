@@ -9,20 +9,23 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/*
+ * Displays an animated settings screen, giving the player 
+ * choice of difficulty on three levels (easy, medium, hard).
+ */
 public class SettingsScreen implements Screen {
-
 		// CORE GAME
 		private final BattleGrid myGame;
 		private OrthographicCamera myCamera;
+		int difficulty;
 		// ART ASSETS
 		TextureRegion wp1; // wallpaper frame 1
 		TextureRegion wp2; // wallpaper frame 2
 		Animation wpAnim; // animated wallpaper
 		TextureRegion currentFrame; // current wallpaper frame
-		// AUDIO
+		// AUDIO ASSETS
 		Sound selectSound;
-		// difficulty setting
-		int difficulty;
+		
 		public SettingsScreen(final BattleGrid theGame, int theDifficulty) {
 			// COPY GAME STATE
 			myGame = theGame;
@@ -42,10 +45,7 @@ public class SettingsScreen implements Screen {
 		}
 		
 		@Override
-		public void show() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void show() {}
 
 		@Override
 		public void render(float delta) {
@@ -67,16 +67,14 @@ public class SettingsScreen implements Screen {
 	        // Transition to the game
 	        if (Gdx.input.isTouched()) {
 	        	int x = Gdx.input.getX();
-	        	int y = Gdx.input.getY();
 	        	
-	        	if (x < 185) {
+	        	if (x < 185) { // only check x coordinate.
 	        		difficulty = 0;
 	        	} else if (x > 185 && x < 400) {
 	        		difficulty = 1;
 	        	} else {
 	        		difficulty = 4;
 	        	}
-	        	//System.out.println(difficulty);
 	        	selectSound.play(); 
 	        	myGame.setScreen(new FadeOutTransition(myGame, new GameScreen(myGame, difficulty), 1));
 	            dispose();
@@ -85,28 +83,16 @@ public class SettingsScreen implements Screen {
 		}
 
 		@Override
-		public void resize(int width, int height) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void resize(int width, int height) {}
 
 		@Override
-		public void pause() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void pause() {}
 
 		@Override
-		public void resume() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void resume() {}
 
 		@Override
-		public void hide() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void hide() {}
 
 		@Override
 		public void dispose() {

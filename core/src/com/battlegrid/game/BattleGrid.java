@@ -14,12 +14,12 @@ public class BattleGrid extends Game {
 	public BitmapFont myFont; // font for all game-generated text
 	public float stateTime; // game clock
 	public static ScreenshotFactory sc; // for recording pixels on screen
-	
+
 	/*
-	 * This method is called one time on application start.
-	 * It loads the welcome screen.
+	 * This method is called one time on application start. It loads the welcome
+	 * screen.
 	 */
-	public void create () {
+	public void create() {
 		// initialize fields
 		myBatch = new SpriteBatch();
 		myFont = new BitmapFont();
@@ -28,17 +28,16 @@ public class BattleGrid extends Game {
 		this.setScreen(new WelcomeScreen(this));
 	}
 
-
 	/*
 	 * Called 60 times per second. Requests frames to update via myBatch.
 	 */
-	public void render () {
+	public void render() {
 		stateTime += Gdx.graphics.getDeltaTime(); // increment game clock
 		super.render();
 	}
-	
+
 	/*
-     * Removes variables from memory once game is finished.
+	 * Removes variables from memory once game is finished.
 	 */
 	public void dispose() {
 		myBatch.dispose();
