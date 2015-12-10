@@ -2,7 +2,6 @@ package com.battlegrid.game;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -12,6 +11,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 /*
  * This AI class controls the AI player.
+ * There are three agents, each based on a a difficulty from 1-3. However, there is 
+ * room to implement harder (or easier) agents in the future.
  */
 public class BattleAI {
 	Player p2;
@@ -24,6 +25,10 @@ public class BattleAI {
 	Point moveLog;
 	int moveCount = 0;
 
+	/*
+	 * The AI is a player object with extra control over what he does.
+	 * As a result, the AI needs to manage some extra variables.
+	 */
 	public BattleAI(Player thePlayer1, Player thePlayer2, int theD, GameBoard theBoard) {
 		p1 = thePlayer1;
 		p2 = thePlayer2;
@@ -35,7 +40,11 @@ public class BattleAI {
 		config(difficulty);
 	}
 
-	// AI also moves much faster at higher difficulty.
+	/*
+	 * I found that the most valuable heuristic to simulate a stronger AI agent
+	 * while keeping the AI looking "human-like" was to increase the speed at which the AI makes choices.
+	 * The step variable determines the rate at which the AI makes a new choice, in milliseconds.
+	 */
 	private void config(int d) {
 		if (difficulty == 4) {
 			step = 350;
@@ -46,6 +55,12 @@ public class BattleAI {
 		}
 	}
 
+	/*
+	 * For the draw phase of the game, the weakest agent pulls random cards.
+	 * Other agents perform maximization on all available cards, taking into account debuffs on the enemy, 
+	 * card elements / bonus damage multipliers and card damage. This results in a optimal card order in terms
+	 * of potential damage output.
+	 */
 	public void draw() {
 		p2.draw();
 		for (int i = 0; i < p2.random.size(); i++) {
@@ -56,23 +71,24 @@ public class BattleAI {
 			p2.myHand = cardMax(p2.myHand);
 			// pull optimal order rather than random
 		}
-		// System.out.println("act: " + cardUtility(p2.myHand));
-		// System.out.println(cardUtility(p2.myHand));
 		p2.random = new ArrayList<Card>(); // reset it
 
 	}
 
+	/*
+	 * Perform one "step", or choice. A step represents each time the AI thinks about what to do next.
+	 */
 	private void step() {
 		time = TimeUtils.millis();
 	}
 
 	/*
-	 * Called on every render frame during battle phase.
+	 * The think method just handles steps for agents, and ensures enough time has passed
+	 * for the agent to think about a move again.
 	 */
 	public void think(int theState) {
 		if (TimeUtils.timeSinceMillis(time) > step && theState == 1) {
 			// see if enough time has passed since last move
-
 			// use agent of correct difficulty level
 			if (difficulty == 0) {
 				agentZero();
@@ -86,7 +102,27 @@ public class BattleAI {
 	}
 
 	/*
-	 * An intermediate level AI for average players.
+	 * A random agent for beginners.
+	 */
+	public void agentZero() {
+		ArrayList<Integer> moves = myBoard.moves(false, myBoard.clone());
+		Random r = new Random();
+		int r1 = r.nextInt(moves.size());
+		int r2 = r.nextInt(10);
+		if (r2 > 7) {
+			attack();
+		} else {
+			myBoard.move(moves.get(r1), p2); // move
+			animator(moves.get(r1));
+		}
+	}
+	
+	/*
+	 * The intermediate agent performs maximization (similar to minimax) over 
+	 * all cards during draw phase. As a result, he chooses an optimal pick order.
+	 * 
+	 * He also has a moderate step speed, so he thinks pretty frequently. He will always attack first if possible,
+	 * and after that he requests the utility function to determine optimal movements.
 	 */
 	public void agentOne() {
 		int[][] state = myBoard.clone();
@@ -125,8 +161,19 @@ public class BattleAI {
 	}
 
 	/*
-	 * This guy is tough. He acts just like agentOne(), but calculates several
-	 * moves ahead and moves quicker.
+	 * This agent is the most difficult one, and is pretty tough.
+	 * In addition to validating his moves using the utility function
+	 * and performing maximization on card order, he has a faster movement speed
+	 * resulting in him being able to unload combos quite fast. He also has some added
+	 * features like wasting cards if the enemy is refusing to go in range to be hit. This 
+	 * prevents him from being locked out of combat if he gets a sequence of 1 range draws while the enemy
+	 * (player) keeps getting 2-3 range draws.
+	 * 
+	 * I built an alpha-beta pruning minimax so he could look several moves ahead,
+	 * but he ends up acting like a robot since the human never plays optimally.
+	 * He jumps between two or so squares, and it isn't much fun to play against.
+	 * I learned that in games like this, detailed heuristics provide a much better experience for
+	 * the player.
 	 */
 	public void agentTwo() {
 		int[][] state = myBoard.clone();
@@ -147,7 +194,6 @@ public class BattleAI {
 
 				if (moveCount % 15 == 0) {
 					// waste low range cards if x seconds pass
-
 					attack();
 					attack = true;
 					moveCount = 0;
@@ -156,20 +202,7 @@ public class BattleAI {
 		}
 		for (int i = 0; i < moves.size(); i++) {
 			int[][] nextState = predictState(false, deepClone(state), moves.get(i));
-
-			// //System.out.println(moves);
-			// for (int x = 0;x < nextState.length;x++) {
-			// for (int k = 0; k < nextState[x].length; k++) {
-			// System.out.print(nextState[x][k]);
-			// }
-			// System.out.println();
-			// }
-
 			int temp = moveUtility(deepClone(nextState));
-			// miniMax(deepClone(nextState), true, 5, 0, 0); // calculate a few
-			// moves ahead
-			// System.out.println(temp);
-			// System.out.println(temp);
 			if (temp > max) {
 				max = temp;
 				move = moves.get(i);
@@ -187,7 +220,10 @@ public class BattleAI {
 	}
 
 	/*
-	 * Minimax with alpha beta pruning to calculate optimal move
+	 * This is a minimax algorithm with alpha beta pruning that allows you to look several
+	 * game boards ahead. Unfortunately, it doesn't provide a very human-seeming AI because
+	 * this is not a game which is easily evaluated based on numbers. Using this algorithm, 
+	 * the AI bunny hops between it's two favorite squares. 
 	 */
 	private int miniMax(int[][] state, boolean isAI, int depth, int alpha, int beta) {
 		if (depth <= 0) {
@@ -220,7 +256,7 @@ public class BattleAI {
 	}
 
 	/*
-	 * clones an int array
+	 * This helper method just deep clones a 2d array of ints.
 	 */
 	public static int[][] deepClone(int[][] input) {
 		if (input == null)
@@ -233,7 +269,8 @@ public class BattleAI {
 	}
 
 	/*
-	 * Predicts a game board in the future.
+	 * This helper method predicts a game board in the future 
+	 * based on the current game board and a simulated move.
 	 */
 	public int[][] predictState(boolean playerOne, int[][] theState, int move) {
 		int[][] result = deepClone(theState);
@@ -267,9 +304,18 @@ public class BattleAI {
 	}
 
 	/*
-	 * Calculates heuristic value of a given move based on bonus multipliers,
-	 * number of cards in hand, position of ai and player, and the hp both
-	 * player and ai.
+	 * This utility function takes into a large number of heuristics to help the AI 
+	 * figure out where to move to next.
+	 * 
+	 * - The AI plays offensively while he has cards in his hand, but more defensively when he lacks cards.
+	 * - The AI also incorporates the range of enemy fire, so if he can get a shot off while not getting hit 
+	 * - (e.x. AI has a 2 range and player has a 1 range) - he will optimize his position and fire from a safe location.
+	 * - In order to provide a more human-like experience, the AI will avoid the tile he was last on, this prevents most 
+	 * bunny-hopping between two tiles.
+	 * - The AI will also factor in the damage of the enemie's card, so that he can determine if a trade is worth it or not 
+	 * (e.x. AI deals 50 dmg, player deals 25 dmg, this is a good trade. If reversed it's a bad trade.)
+	 * - The AI also likes to dodge the player on the Y axis. This is a valid heuristics, since all cards shoot down the x
+	 * currently - but if cards with variable width (e.x. 3 wide, 1 long) are implemented it might need modified.
 	 */
 	public int moveUtility(int[][] state) {
 		int util = 0;
@@ -335,22 +381,6 @@ public class BattleAI {
 	}
 
 	/*
-	 * A random agent for beginners.
-	 */
-	public void agentZero() {
-		ArrayList<Integer> moves = myBoard.moves(false, myBoard.clone());
-		Random r = new Random();
-		int r1 = r.nextInt(moves.size());
-		int r2 = r.nextInt(10);
-		if (r2 > 7) {
-			attack();
-		} else {
-			myBoard.move(moves.get(r1), p2); // move
-			animator(moves.get(r1));
-		}
-	}
-
-	/*
 	 * Iterates through all possible combinations of card hands and returns the
 	 * optimal one based on the cardUtility() function which takes into
 	 * consideration the elements of the cards, the damage of each card, and the
@@ -378,8 +408,11 @@ public class BattleAI {
 
 	/*
 	 * A utility function for determining correct pick order based on card
-	 * damage and elements. 5 cards, 5! possible combinations. Also consider
-	 * current enemy status.
+	 * damage and elements. 5 cards, 5! 
+	 * 
+	 * This takes into account all active environment variables: player debuff status,
+	 * card element, card damage, and optimizes not only for bonus damage combos but for the 
+	 * highest damage bonus damage combos in the correct order for maximium card hand damage.
 	 */
 	public int cardUtility(ArrayList<Card> theCards) {
 		int enemyStatus = p2.status;
@@ -396,6 +429,11 @@ public class BattleAI {
 		return score;
 	}
 
+	/*
+	 * This is a helper method to keep the AI's 
+	 * animations running when he moves since his movements 
+	 * are tied to a variable step timer.
+	 */
 	public void animator(int move) {
 		if (move == 0 || move == 1) {
 			p2.setAnimFrame(2, 100);
@@ -405,6 +443,12 @@ public class BattleAI {
 		}
 	}
 
+	/*
+	 * This method aids in performing attacks against the player.
+	 * An attack involves damage dealt (potentially), a sound clip played,
+	 * an animation of a few frames loading up, and a card being removed from the hand.
+	 * Also remember bonus damage multipliers.
+	 */
 	public void attack() {
 		if (p2.myHand.size() > 0) {
 			p2.setAnimFrame(1, 200); // shoot
