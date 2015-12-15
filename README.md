@@ -16,7 +16,7 @@ Download the "bg-1.0.rar" file, unzip the folder and double click the "bg-1.0.ja
 4. Navigate grid, attacking and dodging.
 5. Redraw a new hand every 15 seconds, a max of 6 times.
 6. Win if AI hp reaches 0.
-7. Lose if your HP reaches 0, or you draw 6 times (no more cards in deck.)
+7. Lose if your HP reaches 0, or you draw 6 times (no more cards in deck).
 
 ### WHATS IMPLEMENTED
 - Player Controller
