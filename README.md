@@ -1,3 +1,8 @@
+# IMPORTANT!
+This was a prototype I built in about a day.
+I am working on a more modular game engine to accomplish the same gameplay style.
+Feel free to use this project as inspiration, or contact me if you are familiar with LibGDX / Networking or spriting and want to work on a larger-scale project with similar inspirations.
+
 # BattleGrid
 A clone of "Megaman Battle Network", a TGC/TPS/RTS hybrid released in the early 2000's.
 
